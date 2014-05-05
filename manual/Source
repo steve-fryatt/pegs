@@ -1,0 +1,75 @@
+<document title="Solitaire">
+<define name="version" value="1.10">
+<define name="date" value="6 December 2002" length=30 align="right">
+
+
+
+
+
+<literal mode="Text">
+=============================================================================
+Solitaire - Desktop Game                                         Version $$version$$
+
+(c) Stephen Fryatt, 1993                       $$date$$
+=============================================================================
+</literal>
+
+
+
+
+
+<chapter title="License" file="License">
+
+<cite>Solitaire</cite> is <strong>Freeware</strong>.  Copyright is held by the author, Stephen Fryatt, 1993.
+
+<cite>Solitaire</cite> may be copied freely, so long as it remains unaltered with all its files and documentation intact.
+
+If you wish to distribute <cite>Solitaire</cite>, please contact me to get my permission. This is so that I can ensure that you have the latest version available.  <cite>Solitaire</cite> may not be sold, although Public Domain libraries may charge for the cost of discs.
+
+No guarantee is made as to the suitability or stability of <cite>Solitaire</cite> for any particular purpose.  No liability can be accepted by the author for any loss or damage caused by the use of <cite>Solitaire</cite>.
+
+</chapter>
+
+
+
+
+<chapter title="Installing Solitaire" file="Install">
+
+<cite>Solitaire</cite> can be run off a hard disc or floppy disc.
+
+To install <cite>Solitaire</cite> on a hard disc, copy the <file>!Solitaire</file> application to a suitable place on your disc.
+
+</chapter>
+
+
+
+
+<chapter title="Using Solitaire" file="Use">
+
+<cite>Solitaire</cite> is a desktop version of the traditional game.  Load it on to the icon bar in the usual way and click <mouse>select</mouse> on the icon to open the game window.
+
+To play, drag the counters around with <mouse>select</mouse>.  A counter can be moved horizontally or vertically into an empty space by jumping over exactly one filled space; the aim is to clear the board down to one remaining counter.
+
+To re-fill the board, click <mouse>menu</mouse> over the main window and select <menu>New Board</menu>.  The <menu>Solid Drags</menu> option in the iconbar menu alternates between dragging sprites and dotted boxes.
+
+</chapter>
+
+
+
+
+<literal mode="Text">
+
+
+Updates and Contacting Me
+-------------------------
+
+  If you have any comments about Solitaire, or would like to report any bugs
+  that you find, you can email me at the address below.
+
+  Updates to Solitaire and more programs for RISC OS computers can be found
+  on my website at http://www.stevefryatt.org.uk/software/
+
+  Stephen Fryatt
+  email: steve@stevefryatt.org.uk
+</literal>
+
