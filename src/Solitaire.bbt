@@ -1,5 +1,10 @@
 LIBRARY "BASIC:LegacyWimp"
 :
+REM These values get replaced by tokenize.
+:
+build_version$ = "1.10"
+build_date$ = "01 Jul 2009"
+:
 ON ERROR PROCerror
 :
 PROCinit
@@ -276,11 +281,11 @@ IF (flag AND 1) swi=-1
 DEF PROCwindows
 main%=FNcreate_window(356,190,588,588,0,0,"Solitaire",1,1,1,1,1,1,1,1,0,0,0,0,sprites%,13)
 :
-DIM name% 33 : $name%="Solitaire"
-DIM use%  33 : $use% ="Desktop patience game"
-DIM auth% 33 : $auth%="© Stephen Fryatt, 1993"
-DIM vers% 33 : $vers%="0.10 (22-December-1993)"
-info%=FNinfo_window(name%,use%,auth%,vers%,33)
+DIM name% 40 : $name%="Solitaire"
+DIM use%  40 : $use% ="Desktop patience game"
+DIM auth% 40 : $auth%=CHR$(169) + " Stephen Fryatt, 1993-" + MID$(build_date$, 8)
+DIM vers% 40 : $vers%=build_version$+" ("+build_date$+")"
+info%=FNinfo_window(name%,use%,auth%,vers%,40)
 ENDPROC
 :
 DEF PROCicons
