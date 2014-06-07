@@ -51,8 +51,11 @@ WHEN 9
 IF menuup%=mmenu% THEN
 PROCnew_board
 ELSE
-IF !block%=1 THEN solid%=NOTsolid%:PROCset_menu_state(menu%,1,ABS(solid%),0)
-IF !block%=2 THEN quit%=TRUE
+ CASE !block% OF
+  WHEN 1 : OSCLI("%Filer_Run <Solitaire$Dir>.!Help")
+  WHEN 2 : solid%=NOTsolid%:PROCset_menu_state(menu%,2,ABS(solid%),0)
+  WHEN 3 : quit%=TRUE
+ ENDCASE
 ENDIF
 WHEN 17,18 : IF block%!16=0 THEN quit%=TRUE
 ENDCASE
@@ -62,7 +65,7 @@ DEF PROCmouse_click(window%,icon%,button%)
 CASE window% OF
   WHEN -2
     CASE button% OF
-      WHEN 2 : PROCdisplay_bar_menu(menu%,3,0,!block%)
+      WHEN 2 : PROCdisplay_bar_menu(menu%,4,0,!block%)
       WHEN 1,4 : PROCnew_board : PROCopen_window(main%)
       ENDCASE
   WHEN main%
@@ -266,9 +269,9 @@ PROCwindows
 PROCicons
 PROCmenus
 IF drag_start%=-1 THEN
-PROCset_menu_state(menu%,1,0,1)
+PROCset_menu_state(menu%,2,0,1)
 ELSE
-PROCset_menu_state(menu%,1,1,0)
+PROCset_menu_state(menu%,2,1,0)
 solid%=TRUE
 ENDIF
 PROCset_peg(16,FALSE)
@@ -330,10 +333,11 @@ icon%=FNcreate_icon(main%,x%*76+28,y%*-76-28,76,76,"",dim%,sprites%,4,0,1,0,1,1,
 =dim%
 :
 DEF PROCmenus
-DIM menu% 99
+DIM menu% 124
 mw%=0 : me%=0
 PROCinit_menu(menu%,mw%,me%,"Solitaire")
 PROCst_menu_item(menu%,mw%,me%,"Info",0,0,0,0,info%)
+PROCst_menu_item(menu%,mw%,me%,"Help",0,0,0,0,-1)
 PROCst_menu_item(menu%,mw%,me%,"Solid drags",0,0,0,0,-1)
 PROCst_menu_item(menu%,mw%,me%,"Quit",0,0,0,1,-1)
 :

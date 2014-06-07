@@ -22,9 +22,9 @@
 | See the Licence for the specific language governing
 | permissions and limitations under the Licence.
 
-IconSprites <Obey$Dir>.!Sprites
-|
 Set Solitaire$Dir <Obey$Dir>
+|
+IconSprites <Solitaire$Dir>.!Sprites
 |
 WimpSlot -min 64k -max 64k
 |
