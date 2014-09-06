@@ -41,6 +41,7 @@ SYS "Wimp_CloseDown"
 END
 :
 DEF PROCpoll
+LOCAL reopen%, reason%
 SYS "Wimp_Poll",0,block% TO reason%
 CASE reason% OF
 WHEN 2 : SYS "Wimp_OpenWindow",,block%
@@ -49,6 +50,8 @@ WHEN 6 : PROCmouse_click(block%!12,block%!16,block%!8)
 WHEN 7 : PROCplace_colour
 WHEN 8 : SYS "Wimp_ProcessKey",block%!24
 WHEN 9
+SYS "Wimp_GetPointerInfo",,safeblock%
+reopen%=(safeblock%!8 = 1)
 IF menuup%=mmenu% THEN
 PROCnew_board
 ELSE
@@ -58,6 +61,7 @@ ELSE
   WHEN 3 : quit%=TRUE
  ENDCASE
 ENDIF
+IF reopen% THEN PROCdisplay_menu(menuup%, 0, 0)
 WHEN 17,18
  CASE block%!16 OF
   WHEN 0      : quit%=TRUE
