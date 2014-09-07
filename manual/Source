@@ -12,6 +12,7 @@ Solitaire - Desktop Game                                         Version $$versi
 
 (c) Stephen Fryatt, 1993-2014                  $$date$$
 =============================================================================
+
 </literal>
 
 
@@ -61,8 +62,33 @@ To re-fill the board, click <mouse>menu</mouse> over the main window and select 
 
 
 
-<literal mode="Text">
+<chapter title="Version History" file="History">
 
+Here is a list of the versions of Solitaire, along with all the changes made.
+
+
+<subhead title="0.10 (19 June 2002)">
+
+First public release.
+
+
+<subhead title="Test Build">
+
+Development release for testing and feedback.
+
+<list>
+<li>Build system revised and license updated to EUPL.
+<li><menu>Help</menu> menu entry added to iconbar menu.
+<li><icon>Website</icon> button added to <window>program information</window> window.
+<li>Menus remain open when selections are made with <mouse>adjust</mouse>.
+</list>
+
+</chapter>
+
+
+
+
+<literal mode="Text">
 
 Updates and Contacting Me
 -------------------------
