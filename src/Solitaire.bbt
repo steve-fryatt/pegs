@@ -21,53 +21,63 @@ REM OR CONDITIONS OF ANY KIND, either express or implied.
 REM
 REM See the Licence for the specific language governing
 REM permissions and limitations under the Licence.
-:
+
 LIBRARY "BASIC:LegacyWimp"
+LIBRARY "BASIC:Message"
+LIBRARY "BASIC:Resources"
 LIBRARY "BASIC:Url"
-:
+LIBRARY "BASIC:WimpError"
+
+PROCwimperror_initialise("Solitaire", "!solitaire")
+ON ERROR result% = FNwimperror_program : END
+
 REM These values get replaced by tokenize.
-:
+
 build_version$ = "1.10"
 build_date$ = "01 Jul 2009"
-:
-ON ERROR PROCerror
-:
-PROCinit
-WHILE NOT quit%
-PROCpoll
+
+PROCinitialise
+
+ON ERROR Quit% = FNwimperror_program
+
+WHILE NOT Quit%
+	PROCpoll
 ENDWHILE
-:
+
 SYS "Wimp_CloseDown"
 END
-:
+
+
+
+
 DEF PROCpoll
 LOCAL reopen%, reason%
-SYS "Wimp_Poll",0,block% TO reason%
+SYS "Wimp_Poll",0,b% TO reason%
 CASE reason% OF
-WHEN 2 : SYS "Wimp_OpenWindow",,block%
-WHEN 3 : SYS "Wimp_CloseWindow",,block%
-WHEN 6 : PROCmouse_click(block%!12,block%!16,block%!8)
+WHEN 2 : SYS "Wimp_OpenWindow",,b%
+WHEN 3 : SYS "Wimp_CloseWindow",,b%
+WHEN 6 : PROCmouse_click(b%!12,b%!16,b%!8)
 WHEN 7 : PROCplace_colour
-WHEN 8 : SYS "Wimp_ProcessKey",block%!24
+WHEN 8 : SYS "Wimp_ProcessKey",b%!24
 WHEN 9
-SYS "Wimp_GetPointerInfo",,safeblock%
-reopen%=(safeblock%!8 = 1)
+SYS "Wimp_GetPointerInfo",,q%
+reopen%=(q%!8 = 1)
 IF menuup%=mmenu% THEN
 PROCnew_board
 ELSE
- CASE !block% OF
+ CASE !b% OF
   WHEN 1 : OSCLI("%Filer_Run <Solitaire$Dir>.!Help")
   WHEN 2 : solid%=NOTsolid%:PROCset_menu_state(menu%,2,ABS(solid%),0)
-  WHEN 3 : quit%=TRUE
+  WHEN 3 : Quit%=TRUE
  ENDCASE
 ENDIF
 IF reopen% THEN PROCdisplay_menu(menuup%, 0, 0)
 WHEN 17,18
- CASE block%!16 OF
-  WHEN 0      : quit%=TRUE
+ CASE b%!16 OF
+  WHEN 0      : Quit%=TRUE
   WHEN &4E383 : PROCurl_bounce(b%)
  ENDCASE
-WHEN 19 : IF block%!16 = &4AF80 THEN PROCurl_bounce(b%)
+WHEN 19 : IF b%!16 = &4AF80 THEN PROCurl_bounce(b%)
 ENDCASE
 ENDPROC
 :
@@ -75,17 +85,17 @@ DEF PROCmouse_click(window%,icon%,button%)
 CASE window% OF
   WHEN -2
     CASE button% OF
-      WHEN 2 : PROCdisplay_bar_menu(menu%,4,0,!block%)
+      WHEN 2 : PROCdisplay_bar_menu(menu%,4,0,!b%)
       WHEN 1,4 : PROCnew_board : PROCopen_window(main%)
       ENDCASE
   WHEN main%
     CASE button% OF
       WHEN 64 : PROCdrag_col(window%,icon%)
-      WHEN 2 : PROCdisplay_menu(mmenu%,!block%,block%!4)
+      WHEN 2 : PROCdisplay_menu(mmenu%,!b%,b%!4)
       ENDCASE
   WHEN info%
     IF button% = 4 AND icon% = 8 THEN
-      PROCurl_launch("http://www.stevefryatt.org.uk/software/games/")
+      PROCurl_launch(FNmessage_lookup("SupportURL"))
       PROCdisplay_menu(-1,0,0)
     ENDIF
   ENDCASE
@@ -168,7 +178,7 @@ PROCredraw_peg(jump%)
 pegs%-=1
 IF pegs%=0 THEN
 drags%=FALSE
-err%=FNreport(255,"Well done",1,app$,1,0)
+PROCwimperror_report(FNmessage_lookup("WellDone"), 1, %01, "")
 ENDIF
 ENDIF
 ENDPROC
@@ -176,36 +186,36 @@ ENDPROC
 DEF PROCdrag(whan%,icon%)
 LOCAL ox%,oy%,x1%,y1%,x2%,y2%,c%
 REMc%=FNicon_colour(whan%,icon%)
-!safeblock%=whan%
-SYS "Wimp_GetWindowState",,safeblock%
-ox%=safeblock%!4-safeblock%!20
-oy%=safeblock%!16-safeblock%!24
-x1%=safeblock%!4
-y1%=safeblock%!8
-x2%=safeblock%!12
-y2%=safeblock%!16
-safeblock%!4=icon%
-SYS "Wimp_GetIconState",,safeblock%
-safeblock%!4=5
-safeblock%!8=ox%+safeblock%!8
-safeblock%!12=oy%+safeblock%!12
-safeblock%!16=ox%+safeblock%!16
-safeblock%!20=oy%+safeblock%!20
-safeblock%!24=x1%
-safeblock%!28=y1%
-safeblock%!32=x2%
-safeblock%!36=y2%
+!q%=whan%
+SYS "Wimp_GetWindowState",,q%
+ox%=q%!4-q%!20
+oy%=q%!16-q%!24
+x1%=q%!4
+y1%=q%!8
+x2%=q%!12
+y2%=q%!16
+q%!4=icon%
+SYS "Wimp_GetIconState",,q%
+q%!4=5
+q%!8=ox%+q%!8
+q%!12=oy%+q%!12
+q%!16=ox%+q%!16
+q%!20=oy%+q%!20
+q%!24=x1%
+q%!28=y1%
+q%!32=x2%
+q%!36=y2%
 IF drag_start%<>-1 AND solid% THEN
-SYS "DragASprite_Start",%00100101,sprites%,"peg",safeblock%+8,safeblock%+24
+SYS "DragASprite_Start",%00100101,sprites%,"peg",q%+8,q%+24
 ELSE
-SYS "Wimp_DragBox",,safeblock%
+SYS "Wimp_DragBox",,q%
 ENDIF
 ENDPROC
 :
 DEF FNdrag_end
 IF drag_stop%<>-1 AND solid% THEN SYS "DragASprite_Stop"
-SYS "Wimp_GetPointerInfo",,safeblock%
-=safeblock%!16
+SYS "Wimp_GetPointerInfo",,q%
+=q%!16
 :
 DEF PROCset_peg(no%,state%)
 IF state% THEN
@@ -216,10 +226,10 @@ ENDIF
 ENDPROC
 :
 DEF PROCredraw_peg(no%)
-!block%=main%
-block%!4=no%
-SYS "Wimp_GetIconState",,block%
-SYS "Wimp_ForceRedraw",main%,block%!8,block%!12,block%!16,block%!20
+!b%=main%
+b%!4=no%
+SYS "Wimp_GetIconState",,b%
+SYS "Wimp_ForceRedraw",main%,b%!8,b%!12,b%!16,b%!20
 ENDPROC
 :
 DEF FNrow(i%)
@@ -259,14 +269,44 @@ DIM area% size%
 SYS "OS_SpriteOp",&10A,area%,f$
 =area%
 :
-DEF PROCinit
-DIM block% 255,safeblock% 255, a% 255
-$block%="TASK"
-quit%=FALSE
-app$="Solitaire"
+
+REM Initialise ourselves, internally and with the Wimp.
 :
-SYS "Wimp_Initialise",200,!block%,app$
-:
+DEF PROCinitialise
+LOCAL resources$, task_name$, task_sprite$
+
+REM Set up the quit flag and global data blocks.
+
+Quit%=FALSE
+
+DIM b% 255, q% 255, a% 255
+
+REM Keep the LegacyWimp libraries happy.
+
+safeblock% = q%
+
+REM Locate the application resources.
+
+resources$ = FNresources_find_territory_folder("<Solitaire$Dir>.Resources")
+
+REM Load the messages file.
+
+PROCmessage_initialise(resources$ + "Messages")
+
+task_name$ = FNmessage_lookup("TaskName")
+task_sprite$ = FNmessage_lookup("TaskSpr")
+PROCwimperror_initialise(task_name$, task_sprite$)
+
+REM Initialise with the Wimp.
+
+q%!0 = &4E383
+q%!4 = &4AF80
+q%!8 = 0
+
+SYS "Wimp_Initialise", 310, &4B534154, task_name$, q%
+
+
+
 sprites%=FNload_sprites("<Solitaire$Dir>.SpriteFile")
 :
 PROCdrag_init
@@ -292,7 +332,7 @@ ENDIF
 PROCset_peg(16,FALSE)
 pegs%(16)=FALSE
 :
-icon%=FNicon_bar("!"+app$)
+icon%=FNicon_bar(task_sprite$)
 ENDPROC
 :
 DEF PROCnew_board
@@ -362,9 +402,4 @@ PROCst_menu_item(mmenu%,mw%,me%,"New Board",0,0,0,1,-1)
 PROCst_menu_item(menu%,mw%,me%,"Solid drags",0,0,0,0,-1)
 PROCst_menu_item(menu%,mw%,me%,"Quit",0,0,0,1,-1)
 ENDPROC
-:
-DEF PROCerror
-err%=FNreport(255,REPORT$+" at line "+STR$(ERL),1,app$,1,0)
-SYS "Wimp_CloseDown"
-END
-ENDPROC
+
