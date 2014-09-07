@@ -23,13 +23,14 @@ REM See the Licence for the specific language governing
 REM permissions and limitations under the Licence.
 
 LIBRARY "BASIC:Icon"
-LIBRARY "BASIC:LegacyWimp"
 LIBRARY "BASIC:Menu"
 LIBRARY "BASIC:Message"
 LIBRARY "BASIC:Resources"
 LIBRARY "BASIC:Template"
 LIBRARY "BASIC:Url"
 LIBRARY "BASIC:WimpError"
+LIBRARY "BASIC:WimpSprite"
+LIBRARY "BASIC:Window"
 
 PROCwimperror_initialise("Solitaire", "!solitaire")
 ON ERROR result% = FNwimperror_program : END
@@ -74,7 +75,7 @@ ELSE
   WHEN 3 : Quit%=TRUE
  ENDCASE
 ENDIF
-IF reopen% THEN PROCdisplay_menu(FNmenu_current_handle, 0, 0)
+IF reopen% THEN PROCmenu_create(FNmenu_current_handle, 0, 0)
 WHEN 17,18
  CASE b%!16 OF
   WHEN 0      : Quit%=TRUE
@@ -89,9 +90,9 @@ CASE window% OF
   WHEN -2
     CASE button% OF
       WHEN 2 : PROCmenu_create_iconbar(IconbarMenu%, !b%)
-      WHEN 1,4 : PROCnew_board : PROCopen_window(main%)
+      WHEN 1,4 : PROCnew_board : PROCwindow_open(MainWindow%)
       ENDCASE
-  WHEN main%
+  WHEN MainWindow%
     CASE button% OF
       WHEN 64 : PROCdrag_col(window%,icon%)
       WHEN 2 : PROCmenu_create(MainMenu%, !b%, b%!4)
@@ -99,7 +100,7 @@ CASE window% OF
   WHEN InfoWindow%
     IF button% = 4 AND icon% = 8 THEN
       PROCurl_launch(FNmessage_lookup("SupportURL"))
-      PROCdisplay_menu(-1,0,0)
+      PROCmenu_create(-1,0,0)
     ENDIF
   ENDCASE
 ENDPROC
@@ -209,7 +210,7 @@ q%!28=y1%
 q%!32=x2%
 q%!36=y2%
 IF drag_start%<>-1 AND solid% THEN
-SYS "DragASprite_Start",%00100101,sprites%,"peg",q%+8,q%+24
+SYS "DragASprite_Start",%00100101,SpriteArea%,"peg",q%+8,q%+24
 ELSE
 SYS "Wimp_DragBox",,q%
 ENDIF
@@ -222,17 +223,17 @@ SYS "Wimp_GetPointerInfo",,q%
 :
 DEF PROCset_peg(no%,state%)
 IF state% THEN
-$icon_ref%(no%)="in"
+$FNicon_indirection(MainWindow%, no%) = "in"
 ELSE
-$icon_ref%(no%)="out"
+$FNicon_indirection(MainWindow%, no%) = "out"
 ENDIF
 ENDPROC
 :
 DEF PROCredraw_peg(no%)
-!b%=main%
+!b%=MainWindow%
 b%!4=no%
 SYS "Wimp_GetIconState",,b%
-SYS "Wimp_ForceRedraw",main%,b%!8,b%!12,b%!16,b%!20
+SYS "Wimp_ForceRedraw",MainWindow%,b%!8,b%!12,b%!16,b%!20
 ENDPROC
 :
 DEF FNrow(i%)
@@ -261,32 +262,19 @@ WHEN 12,19,26           : col%=7
 ENDCASE
 =col%
 :
-DEF FNload_sprites(f$)
-LOCAL size%,area%
-in%=OPENIN(f$)
-size%=EXT#in%
-CLOSE#in%
-size%+=4
-DIM area% size%
-!area%=size% : area%!8=16
-SYS "OS_SpriteOp",&10A,area%,f$
-=area%
-:
+
+
 
 REM Initialise ourselves, internally and with the Wimp.
 :
 DEF PROCinitialise
-LOCAL resources$, task_name$, task_sprite$, indirected_data%, indirected_size%
+LOCAL i%, resources$, task_name$, task_sprite$, indirected_data%, indirected_size%, ibar_icon%
 
 REM Set up the quit flag and global data blocks.
 
 Quit% = FALSE
 
 DIM b% 4000, q% 255, a% 255
-
-REM Keep the LegacyWimp libraries happy.
-
-safeblock% = q%
 
 REM Locate the application resources.
 
@@ -308,12 +296,22 @@ q%!8 = 0
 
 SYS "Wimp_Initialise", 310, &4B534154, task_name$, q%
 
-REM Load the window tamplates
+REM Load the application sprites.
+
+SpriteArea% = FNwimpsprite_load_user_sprites("<Solitaire$Dir>.SpriteFile")
+
+REM Load the window templates.
 
 indirected_size% = 2048
 DIM indirected_data% indirected_size%
 
 PROCtemplate_open(resources$ + "Templates")
+PROCtemplate_load("Board", b%, indirected_data%, indirected_size%, -1)
+b%!64 = SpriteArea%
+FOR i% = 0 TO 32
+	b%!(88 + 32*i% + 24) = SpriteArea%
+NEXT i%
+SYS "Wimp_CreateWindow",,b% TO MainWindow%
 PROCtemplate_load("ProgInfo", b%, indirected_data%, indirected_size%, -1)
 SYS "Wimp_CreateWindow",,b% TO InfoWindow%
 PROCtemplate_close
@@ -321,7 +319,7 @@ PROCtemplate_close
 $FNicon_indirection(InfoWindow%, 4) = CHR$(169) + " Stephen Fryatt, 1993-" + MID$(build_date$, 8)
 $FNicon_indirection(InfoWindow%, 6) = build_version$ + " (" + build_date$ + ")"
 
-REM Initialise and load the menu templates
+REM Initialise and load the menu templates.
 
 PROCmenu_initialise
 
@@ -334,11 +332,11 @@ MainMenu% = b%!4
 
 
 
-sprites%=FNload_sprites("<Solitaire$Dir>.SpriteFile")
+
 :
 PROCdrag_init
 :
-DIM icon_ref%(32),pegs%(32),rows%(7)
+DIM pegs%(32),rows%(7)
 pegs%()=TRUE
 rows%()=0,0,3,5,7,7,5,3
 :
@@ -346,8 +344,6 @@ drags%=TRUE
 solid%=FALSE
 pegs%=31
 :
-PROCwindows
-PROCicons
 IF drag_start%=-1 THEN
 PROCmenu_set_state(IconbarMenu%, 2, FALSE, TRUE)
 ELSE
@@ -357,7 +353,7 @@ ENDIF
 PROCset_peg(16,FALSE)
 pegs%(16)=FALSE
 :
-icon%=FNicon_bar(task_sprite$)
+ibar_icon% = FNicon_create_standard_bar(-1, task_sprite$)
 ENDPROC
 :
 DEF PROCnew_board
@@ -369,7 +365,7 @@ NEXT loop%
 pegs%=31
 PROCset_peg(16,FALSE)
 pegs%(16)=FALSE
-PROCredraw_window(main%)
+PROCwindow_force_redraw(MainWindow%)
 drags%=TRUE
 ENDPROC
 :
@@ -384,25 +380,4 @@ DEF FNswi(swi$)
 SYS "XOS_SWINumberFromString",,swi$ TO swi;flag
 IF (flag AND 1) swi=-1
 =swi
-:
-DEF PROCwindows
-main%=FNcreate_window(356,190,588,588,0,0,"Solitaire",1,1,1,1,1,1,1,1,0,0,0,0,sprites%,13)
-ENDPROC
-:
-DEF PROCicons
-count%=0
-FOR y%=1 TO 7
-IF y%=3 OR y%=4 OR y%=5 THEN FOR x%=0 TO 6 ELSE FOR x%=2 TO 4
-icon_ref%(count%)=FNpeg_icon(x%,y%)
-count%+=1
-NEXT
-NEXT
-ENDPROC
-:
-DEF FNpeg_icon(x%,y%)
-LOCAL dim%
-DIM dim% 3
-$dim%="in"
-icon%=FNcreate_icon(main%,x%*76+28,y%*-76-28,76,76,"",dim%,sprites%,4,0,1,0,1,1,0,1,0,6,0,0,0,0,0,0)
-=dim%
 
