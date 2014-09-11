@@ -101,7 +101,7 @@ WHEN MainWindow%
 WHEN InfoWindow%
 	IF button% = 4 AND icon% = 8 THEN
 		PROCurl_launch(FNmessage_lookup("SupportURL"))
-		PROCmenu_create(-1,0,0)
+		PROCmenu_create(-1, 0, 0)
 	ENDIF
 ENDCASE
 ENDPROC
@@ -251,30 +251,27 @@ q%!28=y1%
 q%!32=x2%
 q%!36=y2%
 IF DragASpriteStart%<>-1 AND SolidDrags% THEN
-SYS "DragASprite_Start",%00100101,SpriteArea%,"peg",q%+8,q%+24
+	SYS "DragASprite_Start",%00100101,SpriteArea%,"peg",q%+8,q%+24
 ELSE
-SYS "Wimp_DragBox",,q%
+	SYS "Wimp_DragBox",,q%
 ENDIF
 ENDPROC
 :
 DEF FNdrag_end
-IF DragASpriteStop%<>-1 AND SolidDrags% THEN SYS "DragASprite_Stop"
+IF DragASpriteStop% <> -1 AND SolidDrags% THEN SYS "DragASprite_Stop"
 SYS "Wimp_GetPointerInfo",,q%
 =q%!16
 :
-DEF PROCset_peg(no%,state%)
+DEF PROCset_peg(icon%, state%)
 IF state% THEN
-$FNicon_indirection(MainWindow%, no%) = "in"
+	PROCicon_set_indirected_text(MainWindow%, icon%, "in")
 ELSE
-$FNicon_indirection(MainWindow%, no%) = "out"
+	PROCicon_set_indirected_text(MainWindow%, icon%, "out")
 ENDIF
 ENDPROC
 :
-DEF PROCredraw_peg(no%)
-!b%=MainWindow%
-b%!4=no%
-SYS "Wimp_GetIconState",,b%
-SYS "Wimp_ForceRedraw",MainWindow%,b%!8,b%!12,b%!16,b%!20
+DEF PROCredraw_peg(icon%)
+PROCicon_redraw(MainWindow%, icon%)
 ENDPROC
 :
 DEF FNrow(i%)
