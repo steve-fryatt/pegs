@@ -85,7 +85,7 @@ WHEN -2
 	CASE button% OF
 	WHEN 2
 		PROCmenu_create_iconbar(IconbarMenu%, !b%)
-	WHEN 1
+	WHEN 4
 		PROCnew_board
 		PROCwindow_open(MainWindow%)
 	ENDCASE
