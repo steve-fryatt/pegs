@@ -118,7 +118,7 @@ SYS "Wimp_GetPointerInfo",,q%
 reopen% = (q%!8 = 1)
 
 CASE FNmenu_current_handle OF
-WHEN MainMenu% THEN
+WHEN MainMenu%
 	CASE !block% OF
 		WHEN 0	: PROCnew_board
 	ENDCASE
