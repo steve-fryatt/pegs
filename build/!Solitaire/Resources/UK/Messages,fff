@@ -30,3 +30,21 @@ URLFailed:Could not find an application to launch the given URL.
 
 WellDone:Game Complete - Well Done!
 
+# Interactive Help Messages
+
+Help.IconBar:\TSolitaire application.|MIt plays the Solitaire board game.|M\Sstart a new game.
+
+Help.Main:\Tmain Solitaire \w.|MIt plays the game of Solitaire, where the aim is to clear pegs from the board until only one is left.
+Help.Main.Grid:\Dmove a counter.|MMoves or horizontal or vertical, and consist of a jump over a single hole containing a peg and landing in an empty hole.|MThe jumped peg is then removed.
+
+Help.Info:\Tprogram information \w for the Solitaire application.
+Help.Info.Website:\Tprogram information \w for the Solitaire application.|M\Svisit its website for information and updates.
+
+Help.MainMenu.00:\Sstart a new game.
+
+Help.IconBarMenu.00:\Rto see information about Solitaire and visit its website.
+Help.IconBarMenu.01:\Sread the Solitaire documentation.
+Help.IconBarMenu.02:\Stoggle whether or not drags in the Soliataire window use a representation of a peg or a dashed box.
+Help.IconBarMenu.03:\Squit Soliatire.
+
+
