@@ -176,7 +176,7 @@ IF root$ <> "" THEN
 	IF suffix$ <> "" THEN
 		root$ += "." + suffix$
 	ELSE
-		IF message%!32 = MainWindow% AND message%!36 >= 0 AND message%!36 <= 26 THEN root$ += ".Grid"
+		IF message%!32 = MainWindow% AND message%!36 >= 0 AND message%!36 <= 32 THEN root$ += ".Grid"
 	ENDIF
 	found% = FNmessage_lookup_result("Help." + root$, message$)
 ELSE
