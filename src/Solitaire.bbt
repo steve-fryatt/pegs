@@ -64,7 +64,7 @@ CASE reason% OF
 	WHEN 2		: SYS "Wimp_OpenWindow",,b%
 	WHEN 3		: SYS "Wimp_CloseWindow",,b%
 	WHEN 6		: PROCmouse_click(b%!12, b%!16, b%!8)
-	WHEN 7		: PROCplace_colour
+	WHEN 7		: PROCdrag_end
 	WHEN 8		: SYS "Wimp_ProcessKey",b%!24
 	WHEN 9		: PROCmenu_selection(b%)
 	WHEN 17, 18	: PROCuser_message(b%)
@@ -93,7 +93,7 @@ WHEN -2
 WHEN MainWindow%
 	CASE button% OF
 	WHEN 64
-		PROCdrag_col(window%,icon%)
+		PROCdrag_peg(icon%)
 	WHEN 2
 		PROCmenu_create(MainMenu%, !b%, b%!4)
 	ENDCASE
@@ -203,121 +203,158 @@ SYS "Wimp_SendMessage", 17, message%, message%!4
 ENDPROC
 
 
-DEF PROCdrag_col(w%,i%)
-IF NOT DragsEnabled% THEN ENDPROC
-IF NOT pegs%(i%) THEN VDU 7 : ENDPROC
-from%=i%
-PROCset_peg(i%,FALSE)
-PROCredraw_peg(i%)
-PROCdrag(w%,i%)
-ENDPROC
+REM Start to drag a peg.
+REM
+REM \param icon%		The icon containing the peg to be dragged.
 :
-DEF PROCplace_colour
-LOCAL valid%,verti%,horiz%,jump%
-valid%=TRUE
-icon%=FNdrag_end
-IF icon%<0 THEN PROCset_peg(from%,TRUE) : PROCredraw_peg(from%) : ENDPROC
-IF pegs%(icon%) THEN
-PROCset_peg(from%,TRUE)
-PROCredraw_peg(from%)
-VDU 7
-valid%=FALSE
-ENDIF
-IF FNrow(icon%)<>FNrow(from%) AND FNcol(icon%)<>FNcol(from%) THEN
-PROCset_peg(from%,TRUE)
-PROCredraw_peg(from%)
-VDU 7
-valid%=FALSE
-ENDIF
-IF valid% THEN
-IF FNrow(icon%)=FNrow(from%) THEN horiz%=TRUE : verti%=FALSE
-IF FNcol(icon%)=FNcol(from%) THEN verti%=TRUE : horiz%=FALSE
-ENDIF
-IF verti% THEN
-IF ABS(FNrow(icon%)-FNrow(from%))<>2 THEN
-PROCset_peg(from%,TRUE)
-PROCredraw_peg(from%)
-VDU 7
-valid%=FALSE
-ENDIF
-ENDIF
-IF horiz% THEN
-IF ABS(FNcol(icon%)-FNcol(from%))<>2 THEN
-PROCset_peg(from%,TRUE)
-PROCredraw_peg(from%)
-VDU 7
-valid%=FALSE
-ENDIF
-ENDIF
-IF verti% AND valid% THEN
-IF FNrow(icon%)>FNrow(from%) THEN
-jump%=icon%-rows%(FNrow(icon%))
-ELSE
-jump%=from%-rows%(FNrow(from%))
-ENDIF
-ENDIF
-IF horiz% AND valid% THEN
-IF FNcol(icon%)>FNcol(from%) THEN
-jump%=icon%-1
-ELSE
-jump%=from%-1
-ENDIF
-ENDIF
-IF NOT pegs%(jump%) THEN
-PROCset_peg(from%,TRUE)
-PROCredraw_peg(from%)
-VDU 7
-valid%=FALSE
-ENDIF
-IF valid% THEN
-pegs%(from%)=FALSE
-pegs%(icon%)=TRUE
-pegs%(jump%)=FALSE
-PROCset_peg(icon%,TRUE)
-PROCset_peg(jump%,FALSE)
-PROCredraw_peg(icon%)
-PROCredraw_peg(jump%)
-pegs%-=1
-IF pegs%=0 THEN
-DragsEnabled%=FALSE
-PROCwimperror_report(FNmessage_lookup("WellDone"), 1, %01, "")
-ENDIF
-ENDIF
-ENDPROC
-:
-DEF PROCdrag(whan%,icon%)
-LOCAL ox%,oy%,x1%,y1%,x2%,y2%,c%
-REMc%=FNicon_colour(whan%,icon%)
-!q%=whan%
+DEF PROCdrag_peg(icon%)
+LOCAL ox%,oy%,x1%,y1%,x2%,y2%
+
+REM If drags are enabled, or there's no peg, do nothing.
+
+IF NOT DragsEnabled% OR NOT Pegs%(icon%) THEN ENDPROC
+
+REM Remeber the starting place and remove the peg.
+
+DragFrom% = icon%
+
+PROCset_peg(icon%, FALSE)
+
+REM Set up the dragging parameters.
+
+!q% = MainWindow%
 SYS "Wimp_GetWindowState",,q%
-ox%=q%!4-q%!20
-oy%=q%!16-q%!24
-x1%=q%!4
-y1%=q%!8
-x2%=q%!12
-y2%=q%!16
-q%!4=icon%
+
+ox% = q%!4 - q%!20
+oy% = q%!16 - q%!24
+x1% = q%!4
+y1% = q%!8
+x2% = q%!12
+y2% = q%!16
+
+q%!4 = icon%
 SYS "Wimp_GetIconState",,q%
-q%!4=5
-q%!8=ox%+q%!8
-q%!12=oy%+q%!12
-q%!16=ox%+q%!16
-q%!20=oy%+q%!20
-q%!24=x1%
-q%!28=y1%
-q%!32=x2%
-q%!36=y2%
-IF DragASpriteStart%<>-1 AND SolidDrags% THEN
-	SYS "DragASprite_Start",%00100101,SpriteArea%,"peg",q%+8,q%+24
+
+q%!4 = 5
+q%!8 = ox% + q%!8
+q%!12 = oy% + q%!12
+q%!16 = ox% + q%!16
+q%!20 = oy% + q%!20
+q%!24 = x1%
+q%!28 = y1%
+q%!32 = x2%
+q%!36 = y2%
+
+REM Start the drag.
+
+IF DragASpriteStart% <> -1 AND SolidDrags% THEN
+	SYS "DragASprite_Start", %00100101, SpriteArea%, "peg", q%+8, q%+24
 ELSE
 	SYS "Wimp_DragBox",,q%
 ENDIF
 ENDPROC
+
+
+REM Process a Drag End event.
 :
-DEF FNdrag_end
+DEF PROCdrag_end
 IF DragASpriteStop% <> -1 AND SolidDrags% THEN SYS "DragASprite_Stop"
+
+REM Find the end of the drag and process it.
+
 SYS "Wimp_GetPointerInfo",,q%
-=q%!16
+IF q%!12 = MainWindow% THEN PROCdrop_peg(q%!16)
+ENDPROC
+
+
+REM Process dropped pegs which end up somewhere in the main window.
+REM
+REM \param icon%		The icon under the end of the drag (may be
+REM				-1 or out of range).
+:
+DEF PROCdrop_peg(icon%)
+LOCAL jumped_peg%
+
+REM If the icon is out of range of the grid, return the peg and exit.
+
+IF icon% < 0 OR icon% > 32 THEN
+	PROCset_peg(DragFrom%, TRUE)
+	ENDPROC
+ENDIF
+
+REM If there's already a peg in the destination hole, return the peg and exit.
+
+IF Pegs%(icon%) THEN
+	PROCset_peg(DragFrom%, TRUE)
+	ENDPROC
+ENDIF
+
+REM Check the validity of the move: horizontal or vertical, and over a peg
+REM that's still present.
+
+CASE TRUE OF
+WHEN FNrow(icon%) = FNrow(DragFrom%) : REM The move was horizontal.
+	REM If the move wasn't two slots, return the peg and exit.
+
+	IF ABS(FNcolumn(icon%) - FNcolumn(DragFrom%)) <> 2 THEN
+		PROCset_peg(DragFrom%, TRUE)
+		ENDPROC
+	ENDIF
+
+	REM Work out the icon containing the jumped peg.
+
+	IF FNcolumn(icon%) > FNcolumn(DragFrom%) THEN
+		jumped_peg% = icon% - 1
+	ELSE
+		jumped_peg% = DragFrom% - 1
+	ENDIF
+
+WHEN FNcolumn(icon%) = FNcolumn(DragFrom%) : REM The move was vertical.
+	REM If the move wasn't two slots, return the peg and exit.
+
+	IF ABS(FNrow(icon%) - FNrow(DragFrom%)) <> 2 THEN
+		PROCset_peg(DragFrom%, TRUE)
+		ENDPROC
+	ENDIF
+
+	REM Work out the icon containing the jumped peg.
+
+	IF FNrow(icon%) > FNrow(DragFrom%) THEN
+		jumped_peg% = icon% - RowStart%(FNrow(icon%))
+	ELSE
+		jumped_peg% = DragFrom% - RowStart%(FNrow(DragFrom%))
+	ENDIF
+
+OTHERWISE : REM The move wasn't horizontal or vertical, so return the peg and exit.
+	PROCset_peg(DragFrom%, TRUE)
+	ENDPROC
+ENDCASE
+
+REM If there was no peg in the jumped hole, return the peg and exit.
+
+IF NOT Pegs%(jumped_peg%) THEN
+	PROCset_peg(DragFrom%, TRUE)
+	ENDPROC
+ENDIF
+
+REM The move was valid, so update the board.
+
+PROCset_peg(icon%, TRUE)
+PROCset_peg(jumped_peg%, FALSE)
+
+REM If there's just one peg left, it's a win!
+
+IF ABS(SUM(Pegs%())) <= 1 THEN
+	DragsEnabled% = FALSE
+	PROCwimperror_report(FNmessage_lookup("WellDone"), 1, %01, "")
+ENDIF
+ENDPROC
+
+
+REM Add or remove a peg from the board.
+REM
+REM \param icon%		The icon to change.
+REM \param state%		TRUE to place a peg; FALSE to remove it.
 :
 DEF PROCset_peg(icon%, state%)
 IF state% THEN
@@ -325,51 +362,71 @@ IF state% THEN
 ELSE
 	PROCicon_set_indirected_text(MainWindow%, icon%, "out")
 ENDIF
-ENDPROC
-:
-DEF PROCredraw_peg(icon%)
+Pegs%(icon%) = state%
 PROCicon_redraw(MainWindow%, icon%)
 ENDPROC
+
+
+REM Convert an icon number into a row number, counting from 0 at the top.
+REM
+REM \param icon%		The icon to convert.
+REM \return			The row number for the icon, or -1 on error.
 :
-DEF FNrow(i%)
+DEF FNrow(icon%)
 LOCAL row%
-CASE i% OF
-WHEN 0,1,2                : row%=1
-WHEN 3,4,5                : row%=2
-WHEN 6,7,8,9,10,11,12     : row%=3
-WHEN 13,14,15,16,17,18,19 : row%=4
-WHEN 20,21,22,23,24,25,26 : row%=5
-WHEN 27,28,29             : row%=6
-WHEN 30,31,32             : row%=7
+
+CASE icon% OF
+	WHEN 0, 1, 2			: row% = 0
+	WHEN 3, 4, 5			: row% = 1
+	WHEN 6, 7, 8, 9, 10, 11, 12	: row% = 2
+	WHEN 13, 14, 15, 16, 17, 18, 19	: row% = 3
+	WHEN 20, 21, 22, 23, 24, 25, 26	: row% = 4
+	WHEN 27, 28, 29			: row% = 5
+	WHEN 30, 31, 32			: row% = 6
 ENDCASE
 =row%
+
+
+REM Convert an icon number into a column number, counting from 0 on the left.
+REM
+REM \param icon%		The icon to convert.
+REM \return			The column number for the icon, or -1 on error.
 :
-DEF FNcol(i%)
-LOCAL col%
-CASE i% OF
-WHEN 6,13,20            : col%=1
-WHEN 7,14,21            : col%=2
-WHEN 0,3,8,15,22,27,30  : col%=3
-WHEN 1,4,9,16,23,28,31  : col%=4
-WHEN 2,5,10,17,24,29,32 : col%=5
-WHEN 11,18,25           : col%=6
-WHEN 12,19,26           : col%=7
+DEF FNcolumn(icon%)
+LOCAL column%
+
+CASE icon% OF
+	WHEN 6, 13, 20			: column% = 0
+	WHEN 7, 14, 21			: column% = 1
+	WHEN 0, 3, 8, 15, 22, 27, 30	: column% = 2
+	WHEN 1, 4, 9, 16, 23, 28, 31	: column% = 3
+	WHEN 2, 5, 10, 17, 24, 29, 32	: column% = 4
+	WHEN 11, 18, 25			: column% = 5
+	WHEN 12, 19, 26			: column% = 6
+	OTHERWISE			: column% = -1
 ENDCASE
-=col%
+=column%
+
+
+REM Reset the playing board to a full set of pegs.
 :
 DEF PROCnew_board
 LOCAL loop%
-pegs%()=TRUE
+
+REM Place all the pegs, 
+
 FOR loop%=0 TO 32
-PROCset_peg(loop%,TRUE)
+	PROCset_peg(loop%, TRUE)
 NEXT loop%
-pegs%=31
-PROCset_peg(16,FALSE)
-pegs%(16)=FALSE
-PROCwindow_force_redraw(MainWindow%)
+
+REM Remove the centre peg.
+
+PROCset_peg(16, FALSE)
+
+REM Re-enable dragging if it's been disabled.
+
 DragsEnabled%=TRUE
 ENDPROC
-
 
 
 REM Initialise ourselves, internally and with the Wimp.
@@ -436,16 +493,17 @@ PROCmenu_load_templates(resources$ + "Menus", b%)
 IconbarMenu% = b%!0
 MainMenu% = b%!4
 
+REM Set up the playing board data storage.
 
+DIM Pegs%(32), RowStart%(6)
 
+REM The icons which start the left-hand end of each row.
 
-DIM pegs%(32),rows%(7)
-pegs%()=TRUE
-rows%()=0,0,3,5,7,7,5,3
-:
-DragsEnabled%=TRUE
-SolidDrags%=FALSE
-pegs%=31
+RowStart%() = 0,3,5,7,7,5,3
+
+REM Initialise the dragging system.
+
+SolidDrags% = FALSE
 
 PROCdrag_init
 
@@ -456,9 +514,12 @@ ELSE
 	SolidDrags%=TRUE
 ENDIF
 
-PROCset_peg(16, FALSE)
-pegs%(16)=FALSE
-:
+REM Create a new playing board.
+
+PROCnew_board
+
+REM Put us on to the iconbar.
+
 ibar_icon% = FNicon_create_standard_bar(-1, task_sprite$)
 ENDPROC
 
