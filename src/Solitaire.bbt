@@ -208,7 +208,7 @@ REM
 REM \param icon%		The icon containing the peg to be dragged.
 :
 DEF PROCdrag_peg(icon%)
-LOCAL ox%,oy%,x1%,y1%,x2%,y2%
+LOCAL ox%, oy%, x1%, y1%, x2%, y2%
 
 REM Check that the icon is in the known range of pegs.
 
