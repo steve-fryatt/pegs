@@ -1,0 +1,13 @@
+Package: Solitaire
+Version: 1.01-1
+Section: Games
+Priority: Optional
+Maintainer: Stephen Fryatt <info@stevefryatt.org.uk>
+Standards-Version: 0.6.0
+Environment: any
+Licence: Free
+Description: Play Peg Solitaire on the Desktop
+ Solitaire is a desktop version of the traditional UK game of Solitaire (that
+ is, not the card game we know as Patience). Clear the playing board by
+ jumping the counters over each other; can you end up with one counter left?
+Components: Apps.Games.!Solitaire (Movable)

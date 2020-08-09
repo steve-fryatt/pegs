@@ -1,4 +1,4 @@
-# Copyright 2014-2016, Stephen Fryatt (info@stevefryatt.org.uk)
+# Copyright 2014-2020, Stephen Fryatt (info@stevefryatt.org.uk)
 #
 # This file is part of Solitaire:
 #
@@ -27,6 +27,9 @@
 ARCHIVE := solitaire
 
 APP := !Solitaire
+
+PACKAGE := Solitaire
+PACKAGELOC := Games
 
 SRCS := Solitaire.bbt
 
