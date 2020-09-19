@@ -1,5 +1,5 @@
 Solitaire
-=======
+=========
 
 A Desktop game of Peg Solitaire.
 
