@@ -1,6 +1,6 @@
 # Copyright 2014-2020, Stephen Fryatt (info@stevefryatt.org.uk)
 #
-# This file is part of Solitaire:
+# This file is part of Pegs:
 #
 #   http://www.stevefryatt.org.uk/software/
 #
@@ -24,14 +24,14 @@
 # It is intended for native compilation on Linux (for use in a GCCSDK
 # environment) or cross-compilation under the GCCSDK.
 
-ARCHIVE := solitaire
+ARCHIVE := pegs
 
-APP := !Solitaire
+APP := !Pegs
 
-PACKAGE := Solitaire
+PACKAGE := Pegs
 PACKAGELOC := Games
 
-SRCS := Solitaire.bbt
+SRCS := Pegs.bbt
 
 include $(SFTOOLS_MAKE)/Basic
 

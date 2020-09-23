@@ -1,4 +1,4 @@
-<document title="Solitaire">
+<document title="Pegs">
 <define name="version" value="1.10">
 <define name="date" value="6 December 2002" length=30 align="right">
 
@@ -8,9 +8,9 @@
 
 <literal mode="Text">
 =============================================================================
-Solitaire - Desktop Game                                         Version $$version$$
+Pegs - Play Peg Solitaire on the Desktop                         Version $$version$$
 
-(c) Stephen Fryatt, 1993-2017                  $$date$$
+(c) Stephen Fryatt, 1993-2020                  $$date$$
 =============================================================================
 
 </literal>
@@ -21,7 +21,7 @@ Solitaire - Desktop Game                                         Version $$versi
 
 <chapter title="Licence" file="Licence">
 
-<cite>Solitaire</cite> is licensed under the EUPL, Version&nbsp;1.2 only (the &ldquo;Licence&rdquo;); you may not use this work except in compliance with the Licence.
+<cite>Pegs</cite> is licensed under the EUPL, Version&nbsp;1.2 only (the &ldquo;Licence&rdquo;); you may not use this work except in compliance with the Licence.
 
 You may obtain a copy of the Licence at <link ref="#url http://joinup.ec.europa.eu/software/page/eupl">http://joinup.ec.europa.eu/software/page/eupl</link>
 
@@ -29,7 +29,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 See the Licence for the specific language governing permissions and limitations under the Licence.
 
-The source for <cite>Solitaire</cite> can be found alongside this binary download, at <link ref="#url http://www.stevefryatt.org.uk/software">http://www.stevefryatt.org.uk/software</link>
+The source for <cite>Pegs</cite> can be found alongside this binary download, at <link ref="#url http://www.stevefryatt.org.uk/software">http://www.stevefryatt.org.uk/software</link>
 
 The necessary libraries and build tools can be found at <link ref="#url http://www.stevefryatt.org.uk/software/build">http://www.stevefryatt.org.uk/software/build</link>
 
@@ -38,20 +38,20 @@ The necessary libraries and build tools can be found at <link ref="#url http://w
 
 
 
-<chapter title="Installing Solitaire" file="Install">
+<chapter title="Installing Pegs" file="Install">
 
-<cite>Solitaire</cite> requires RISC&nbsp;OS&nbsp;3.1 or later, and can be run off a hard disc or floppy disc. To install <cite>Solitaire</cite> on a hard disc, copy the <file>!Solitaire</file> application to a suitable place on your disc.
+<cite>Pegs</cite> requires RISC&nbsp;OS&nbsp;3.1 or later, and can be run off a hard disc or floppy disc. To install <cite>Pegs</cite> on a hard disc, copy the <file>!Pegs</file> application to a suitable place on your disc.
 
 </chapter>
 
 
 
 
-<chapter title="Using Solitaire" file="Use">
+<chapter title="Using Pegs" file="Use">
 
-<cite>Solitaire</cite> is a desktop version of the traditional game of the same name (known as &lsquo;Peg Solitaire&rsquo; in parts of the world where &lsquo;Solitaire&rsquo; refers to a card patience game). Load it on to the iconbar in the usual way and click <mouse>select</mouse> on its icon to open the game window.
+<cite>Pegs</cite> is a desktop version of the traditional game known in the UK as &lsquo;Solitaire&rsquo; (and &lsquo;Peg Solitaire&rsquo; in parts of the world where &lsquo;Solitaire&rsquo; refers to a card patience game). Load it on to the iconbar in the usual way and click <mouse>select</mouse> on its icon to open the game window.
 
-To play, drag the pegs on the board around with <mouse>select</mouse>. A peg can be moved horizontally or vertically into an empty hole by jumping over exactly one hole containing a peg. The aim is to clear the board down to one remaining peg, ideally left in the centre hole which starts empty (although <cite>Solitaire</cite> won&rsquo;t give any special recognition to such a successful ending).
+To play, drag the pegs on the board around with <mouse>select</mouse>. A peg can be moved horizontally or vertically into an empty hole by jumping over exactly one hole containing a peg. The aim is to clear the board down to one remaining peg, ideally left in the centre hole which starts empty (although <cite>Pegs</cite> won&rsquo;t give any special recognition to such a successful ending).
 
 To re-fill the board, click <mouse>menu</mouse> over the main window and select <menu>New Board</menu>.
 
@@ -64,7 +64,7 @@ The <menu>Solid Drags</menu> option in the iconbar menu alternates between dragg
 
 <chapter title="Version History" file="History">
 
-Here is a list of the versions of Solitaire, along with all the changes made.
+Here is a list of the versions of Pegs, along with all the changes made.
 
 
 <subhead title="0.10 (19 June 2002)">
@@ -105,10 +105,10 @@ Update to second public release.
 Updates and Contacting Me
 -------------------------
 
-  If you have any comments about Solitaire, or would like to report any bugs
+  If you have any comments about Pegs, or would like to report any bugs
   that you find, you can email me at the address below.
 
-  Updates to Solitaire and more programs for RISC OS computers can be found
+  Updates to Pegs and more programs for RISC OS computers can be found
   on my website at http://www.stevefryatt.org.uk/software/
 
   Stephen Fryatt

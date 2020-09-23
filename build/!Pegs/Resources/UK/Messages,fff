@@ -1,6 +1,6 @@
 # Copyright 2014, Stephen Fryatt (info@stevefryatt.org.uk)
 #
-# This file is part of Solitaire:
+# This file is part of Pegs:
 #
 #   http://www.stevefryatt.org.uk/software/
 #
@@ -20,9 +20,9 @@
 # See the Licence for the specific language governing
 # permissions and limitations under the Licence.
 
-TaskName:Solitaire
+TaskName:Pegs
 
-TaskSpr:!solitaire
+TaskSpr:!pegs
 
 SupportURL:http://www.stevefryatt.org.uk/software/games/
 
@@ -32,18 +32,18 @@ WellDone:Game Complete - Well Done!
 
 # Interactive Help Messages
 
-Help.IconBar:\TSolitaire application.|MIt plays the Solitaire board game.|M\Sstart a new game.
+Help.IconBar:\TPegs application.|MIt plays the Peg Solitaire board game.|M\Sstart a new game.
 
-Help.Main:\Tmain Solitaire \w.|MIt plays the game of Solitaire, where the aim is to clear pegs from the board until only one is left.
+Help.Main:\Tmain Pegs \w.|MIt plays the game of Peg Solitaire, where the aim is to clear pegs from the board until only one is left.
 Help.Main.Grid:\Dmove a counter.|MMoves or horizontal or vertical, and consist of a jump over a single hole containing a peg and landing in an empty hole.|MThe jumped peg is then removed.
 
-Help.Info:\Tprogram information \w for the Solitaire application.
-Help.Info.Website:\Tprogram information \w for the Solitaire application.|M\Svisit its website for information and updates.
+Help.Info:\Tprogram information \w for the Pegs application.
+Help.Info.Website:\Tprogram information \w for the Pegs application.|M\Svisit its website for information and updates.
 
 Help.MainMenu.00:\Sstart a new game.
 
-Help.IconBarMenu.00:\Rto see information about Solitaire and visit its website.
-Help.IconBarMenu.01:\Sread the Solitaire documentation.
+Help.IconBarMenu.00:\Rto see information about Pegs and visit its website.
+Help.IconBarMenu.01:\Sread the Pegs documentation.
 Help.IconBarMenu.02:\Stoggle whether or not drags in the Soliataire window use a representation of a peg or a dashed box.
 Help.IconBarMenu.03:\Squit Soliatire.
 

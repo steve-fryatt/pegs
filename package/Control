@@ -1,4 +1,4 @@
-Package: Solitaire
+Package: Pegs
 Version: 1.01-1
 Section: Games
 Priority: Optional
@@ -7,7 +7,7 @@ Standards-Version: 0.6.0
 Environment: any
 Licence: Free
 Description: Play Peg Solitaire on the Desktop
- Solitaire is a desktop version of the traditional UK game of Solitaire (that
+ Pegs is a desktop version of the traditional game of Peg Solitaire (that
  is, not the card game we know as Patience). Clear the playing board by
  jumping the counters over each other; can you end up with one counter left?
-Components: Apps.Games.!Solitaire (Movable)
+Components: Apps.Games.!Pegs (Movable)

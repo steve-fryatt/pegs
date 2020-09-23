@@ -1,8 +1,8 @@
 | >!Run
 |
-| Copyright 1993-2014, Stephen Fryatt (info@stevefryatt.org.uk)
+| Copyright 1993-2020, Stephen Fryatt (info@stevefryatt.org.uk)
 |
-| This file is part of Solitaire:
+| This file is part of Pegs:
 |
 |   http://www.stevefryatt.org.uk/software/
 |
@@ -22,10 +22,10 @@
 | See the Licence for the specific language governing
 | permissions and limitations under the Licence.
 
-Set Solitaire$Dir <Obey$Dir>
+Set Pegs$Dir <Obey$Dir>
 |
-IconSprites <Solitaire$Dir>.!Sprites
+IconSprites <Pegs$Dir>.!Sprites
 |
 WimpSlot -min 64k -max 64k
 |
-Run <Solitaire$Dir>.!RunImage
+Run <Pegs$Dir>.!RunImage

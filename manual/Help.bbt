@@ -2,7 +2,7 @@ REM >!Help
 REM
 REM Copyright 2001-2020, Stephen Fryatt (info@stevefryatt.org.uk)
 REM
-REM This file is part of Solitaire:
+REM This file is part of Pegs:
 REM
 REM   http://www.stevefryatt.org.uk/software/
 REM
@@ -30,9 +30,9 @@ REM Change this directory and the names of the target files and variables as req
 
 StrongHelp$ = ""
 TextHelp$ = "HelpText"
-ResourceDir$ = "<Solitaire$Dir>.Resources"
-HelpTextVar$ = "Solitaire$HelpText"
-LanguageVar$ = "Solitaire$Language"
+ResourceDir$ = "<Pegs$Dir>.Resources"
+HelpTextVar$ = "Pegs$HelpText"
+LanguageVar$ = "Pegs$Language"
 FallbackDir$ = "UK"
 
 DIM b% 255
